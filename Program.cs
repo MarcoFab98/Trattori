@@ -10,6 +10,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<ITrattoreService, TrattoreService>();
+builder.Services.AddScoped<IGadgetService, GadgetService>();
 
 var app = builder.Build();
 

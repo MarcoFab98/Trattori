@@ -1,18 +1,25 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Trattori.Model;
+using Trattori.Model.Post;
 using Trattori.Services;
 
 namespace Trattori.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class TrattoreController : Controller
+    public class TrattoreController : ControllerBase
     {
         private readonly ITrattoreService _service;
 
         public TrattoreController(ITrattoreService service)
         {
             _service = service;
+        }
+
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+
+            return Ok(_service.GetAll());
         }
 
         [HttpGet("{id}")]
@@ -23,9 +30,17 @@ namespace Trattori.Controllers
                 return NotFound("Trattore not found");
             return Ok(trattoreById);
         }
+        
+        [HttpGet("{colore}/color")]
+        public IActionResult GetByColor(string colore)
+        {
+            var TrattoriColor = _service.GetByColor(colore);
+
+            return Ok(TrattoriColor);
+        }
 
         [HttpPost]
-        public IActionResult Add([FromBody] Trattore trattore)
+        public IActionResult Add([FromBody] PostTrattoreModel trattore)
         {
             var trattoreAdd = _service.AddTrattore(trattore);
             return CreatedAtAction(
@@ -37,12 +52,18 @@ namespace Trattori.Controllers
                 trattoreAdd);
         }
 
-        [HttpGet("{colore}/color")]
-        public IActionResult GetByColor(string colore)
+        [HttpPut()]
+        public IActionResult PutTrattore(int id, [FromBody] PostTrattoreModel trattore)
         {
-            var TrattoriColor = _service.GetByColor(colore);
+            _service.Modifica(id, trattore);
+            return Ok();
+        }
 
-            return Ok(TrattoriColor);
+        [HttpDelete("{id}")]
+        public IActionResult Remove(int id)
+        {
+            _service.Remove(id);
+            return Ok();
         }
 
 
